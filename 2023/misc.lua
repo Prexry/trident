@@ -39,25 +39,27 @@ return {
     },
     currentSound = nil,
     ApplySound = function(self, assetId)
-        if not self.SoundService:FindFirstChild("PlayerHitHeadshot") then return end
-        local headshotSound = self.SoundService.PlayerHitHeadshot
-        headshotSound.SoundId = assetId
-        headshotSound.Volume = 5
-        headshotSound.Pitch = 1
-        local equalizer = headshotSound:FindFirstChildWhichIsA("EqualizerSoundEffect")
-        if equalizer then equalizer.HighGain = -1.5 end
+        local s = self.SoundService:FindFirstChild("PlayerHitHeadshot")
+        if not s then return end
+        s.SoundId = assetId
+        s.Volume = 5
+        s.Pitch = 1
+        local e = s:FindFirstChildWhichIsA("EqualizerSoundEffect")
+        if e then e.HighGain = -1.5 end
     end,
     ResetSound = function(self)
-        if not self.SoundService:FindFirstChild("PlayerHitHeadshot") then return end
-        local headshotSound = self.SoundService.PlayerHitHeadshot
-        headshotSound.SoundId = "rbxassetid://9119561046"
-        headshotSound.Volume = 1
-        headshotSound.Pitch = 1
-        local equalizer = headshotSound:FindFirstChildWhichIsA("EqualizerSoundEffect")
-        if equalizer then equalizer.HighGain = 0 end
+        local s = self.SoundService:FindFirstChild("PlayerHitHeadshot")
+        if not s then return end
+        s.SoundId = "rbxassetid://9119561046"
+        s.Volume = 1
+        s.Pitch = 1
+        local e = s:FindFirstChildWhichIsA("EqualizerSoundEffect")
+        if e then e.HighGain = 0 end
     end,
     Lighting = game:GetService("Lighting"),
     Sky = (function()
+        local existing = game:GetService("Lighting"):FindFirstChild("CustomSky")
+        if existing then return existing end
         local s = Instance.new("Sky")
         s.Name = "CustomSky"
         s.Parent = game:GetService("Lighting")
@@ -96,24 +98,27 @@ return {
     },
     currentSky = nil,
     setSkybox = function(self, data)
+        local sky = game:GetService("Lighting"):FindFirstChild("CustomSky")
+        if not sky then return end
         for face, id in pairs(data) do
-            self.Sky[face] = id
+            sky[face] = id
         end
     end,
-    AutoRunAndJumpCrouch = function(isAutoRunning, stopAutoRun)
-        while isAutoRunning do
-            if stopAutoRun then break end
-            keypress(0x57)
-            keypress(0x10)
-            task.wait(0.05)
-            keypress(0x43)
-            keypress(0x20)
-            keyrelease(0x20)
-            task.wait(0.5)
-            keyrelease(0x43)
-            keyrelease(0x10)
-            wait(1.2)
-        end
+    AutoRunAndJumpCrouch = function(control)
+        coroutine.wrap(function()
+            while control.enabled do
+                keypress(0x57)
+                keypress(0x10)
+                task.wait(0.05)
+                keypress(0x43)
+                keypress(0x20)
+                keyrelease(0x20)
+                task.wait(0.5)
+                keyrelease(0x43)
+                keyrelease(0x10)
+                wait(1.2)
+            end
+        end)()
     end,
     LootAll = function()
         for i = 1, 20 do
