@@ -104,22 +104,21 @@ return {
             sky[face] = id
         end
     end,
-    AutoRunAndJumpCrouch = function(control)
-        coroutine.wrap(function()
-            while control.enabled do
-                keypress(0x57)
-                keypress(0x10)
-                task.wait(0.05)
-                keypress(0x43)
-                keypress(0x20)
-                keyrelease(0x20)
-                task.wait(0.5)
-                keyrelease(0x43)
-                keyrelease(0x10)
-                wait(1.2)
-            end
-        end)()
-    end,
+AutoRunAndJumpCrouch = function(self, control)
+    while control.enabled do
+        keypress(0x57)
+        keypress(0x10)
+        task.wait(0.05)
+        keypress(0x43)
+        keypress(0x20)
+        keyrelease(0x20)
+        task.wait(0.5)
+        keyrelease(0x43)
+        keyrelease(0x10)
+        wait(1.2)
+    end
+    keyrelease(0x57)
+end,
     LootAll = function()
         for i = 1, 20 do
             game:GetService("Players").LocalPlayer.RemoteEvent:FireServer(12, i, true)
