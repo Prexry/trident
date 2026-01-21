@@ -42,6 +42,7 @@ local v6 = {};
 local bigHeadIndicator = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
 bigHeadIndicator.Name = "BigHeadIndicator"
 bigHeadIndicator.Enabled = false
+bigHeadIndicator.ResetOnSpawn = false
 bigHeadIndicator.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local indicatorImage = Instance.new("ImageLabel", bigHeadIndicator)
@@ -151,10 +152,87 @@ local _ = l_l_v0_Window_0_Tab_0:CreateSlider({
 });
 local l_l_v0_Window_0_Tab_1 = l_v0_Window_0:CreateTab("ESP", nil);
 local _ = l_l_v0_Window_0_Tab_1:CreateSection("Players");
+
+local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
+    Name = "Master ESP Toggle", 
+    CurrentValue = true, 
+    Flag = "MasterESPToggle", 
+    Callback = function(vMaster)
+        MasterESPEnabled = vMaster;
+        if not vMaster then
+            -- Cleanup Main ESP
+            if v25 then
+                for i, v in pairs(v25) do
+                    if v.box then v.box.Visible = false end
+                    if v.name then v.name.Visible = false end
+                    if v.distance then v.distance.Visible = false end
+                    if v.tool then v.tool.Visible = false end
+                    if v.skeletonLines then
+                        for _, lineCtx in pairs(v.skeletonLines) do
+                            if lineCtx.line then lineCtx.line.Visible = false end
+                        end
+                    end
+                end
+            end
+            -- Cleanup Armor ESP
+            if G2L and G2L["1"] then
+                G2L["1"].Enabled = false
+            end
+            if screenGui then -- also checking legacy reference just in case
+                for _, v155 in ipairs(screenGui:GetChildren()) do
+                   if v155:IsA("ViewportFrame") then v155:Destroy() end
+                end
+            end
+            -- Hide Armor ESP line
+            if v147 then v147.Visible = false end
+        elseif vMaster then
+             -- Re-enable logic if needed, mostly the loops will take over next frame
+             -- But we should ensure Armor ESP comes back if it was on
+             if v151 and G2L and G2L["1"] then
+                 G2L["1"].Enabled = true
+             end
+        end
+    end
+});
+
+local _ = l_l_v0_Window_0_Tab_1:CreateKeybind({
+    Name = "Master ESP Keybind",
+    CurrentKeybind = "~",
+    HoldToInteract = false,
+    Flag = "MasterESPKeybind",
+    Callback = function()
+        MasterESPEnabled = not MasterESPEnabled
+        -- Call logic (we can't easily trigger the toggle callback externally cleanly, so we duplicate or extract logic. Duplication is safer here)
+         if not MasterESPEnabled then
+            if v25 then
+                for i, v in pairs(v25) do
+                    if v.box then v.box.Visible = false end
+                    if v.name then v.name.Visible = false end
+                    if v.distance then v.distance.Visible = false end
+                    if v.tool then v.tool.Visible = false end
+                    if v.skeletonLines then
+                        for _, lineCtx in pairs(v.skeletonLines) do
+                            if lineCtx.line then lineCtx.line.Visible = false end
+                        end
+                    end
+                end
+            end
+            if G2L and G2L["1"] then
+                G2L["1"].Enabled = false
+            end
+             if v147 then v147.Visible = false end
+        elseif MasterESPEnabled then
+             if v151 and G2L and G2L["1"] then
+                 G2L["1"].Enabled = true
+             end
+        end
+    end
+});
 local l_RunService_0 = game:GetService("RunService");
 local l_Workspace_0 = game:GetService("Workspace");
 local l_CurrentCamera_0 = l_Workspace_0.CurrentCamera;
 local v25 = {};
+local MasterESPEnabled = true;
 local v26 = false;
 local v27 = true;
 local v28 = true;
@@ -859,7 +937,7 @@ task.spawn(function() --[[ Line: 0 ]] --[[ Name:  ]]
     while true do
         for v84 in pairs(v25) do
             v48[v84] = v65(v84);
-        end;z
+        end;
         task.wait(1);
     end;
 end);
@@ -897,7 +975,7 @@ SetESPColor = function(v92) --[[ Line: 0 ]] --[[ Name:  ]]
 end;
 l_RunService_0.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
     -- upvalues: v26 (ref), l_CurrentCamera_0 (ref), v25 (ref), v52 (ref), v30 (ref), v29 (ref), v55 (ref), v33 (ref), v28 (ref), v27 (ref), v34 (ref), v31 (ref), v48 (ref), v32 (ref)
-    if not v26 then
+    if not v26 or not MasterESPEnabled then
         return;
     else
         local l_Position_0 = l_CurrentCamera_0.CFrame.Position;
@@ -1034,7 +1112,9 @@ ToggleSkeletonESP(false);
 local l_l_l_v0_Window_0_Tab_1_Section_1 = l_l_v0_Window_0_Tab_1:CreateSection("Armor");
 G2L = {};
 G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+G2L["1"].Name = "ArmorDisplayGUI"
 G2L["1"].Enabled = false;
+G2L["1"].ResetOnSpawn = false;
 G2L["1"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
 G2L["2"] = Instance.new("Frame", G2L["1"]);
 G2L["2"].ZIndex = -8;
@@ -1165,8 +1245,11 @@ local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
     Callback = function(v153) --[[ Line: 0 ]] --[[ Name:  ]]
         -- upvalues: v151 (ref)
         v151 = v153;
+        if G2L and G2L["1"] then
+             G2L["1"].Enabled = v153
+        end
         if not v153 then
-            for _, v155 in ipairs(screenGui:GetChildren()) do
+            for _, v155 in ipairs(G2L["1"]:GetChildren()) do
                 if v155:IsA("ViewportFrame") then
                     v155:Destroy();
                 end;
@@ -1217,7 +1300,8 @@ l_RunService_0.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
         return;
     else
         v149 = 0;
-        if not v151 then
+        v149 = 0;
+        if not v151 or not MasterESPEnabled then
             v147.Visible = false;
             v148 = nil;
             return;
@@ -2873,6 +2957,7 @@ local _ = l_l_v0_Window_0_Tab_4:CreateButton({
     Callback = function() --[[ Line: 0 ]] --[[ Name:  ]]
         -- upvalues: v0 (ref)
          if game:GetService('CoreGui'):FindFirstChild('ArmorPreviewUI') then game:GetService('CoreGui').ArmorPreviewUI:Destroy() end; if game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui'):FindFirstChild('ArmorPreviewUI') then game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui').ArmorPreviewUI:Destroy() end;
+         if game:GetService('CoreGui'):FindFirstChild('ArmorDisplayGUI') then game:GetService('CoreGui').ArmorDisplayGUI:Destroy() end; if game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui'):FindFirstChild('ArmorDisplayGUI') then game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui').ArmorDisplayGUI:Destroy() end;
          
          
          HeadSizeEnabled = false;
