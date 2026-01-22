@@ -169,7 +169,7 @@ local v32 = false;
 local v33 = Color3.fromRGB(255, 255, 255);
 local v34 = Color3.fromRGB(255, 255, 255);
 local v35 = Color3.fromRGB(255, 255, 255);
-local _ = math.tan(math.rad(l_CurrentCamera_0.FieldOfView * 0.5));
+
 
 local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
     Name = "Master ESP Toggle", 
@@ -1259,22 +1259,7 @@ local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
         end;
     end
 });
-local _ = l_l_v0_Window_0_Tab_1:CreateSlider({
-    Name = "Fov Slider", 
-    Range = {
-        10, 
-        500
-    }, 
-    Increment = 1, 
-    Suffix = "Size", 
-    CurrentValue = 220, 
-    Flag = "Slider1", 
-    Callback = function(v157) --[[ Line: 0 ]] --[[ Name:  ]]
-        -- upvalues: v152 (ref), v146 (ref)
-        v152 = v157;
-        v146.Radius = v157;
-    end
-});
+
 local function v167() --[[ Line: 0 ]] --[[ Name:  ]]
     -- upvalues: v152 (ref)
     local v159 = nil;
@@ -2297,65 +2282,7 @@ local v424 = 70;
 local v425 = 70;
 local v426 = 20;
 local v427 = false;
-local _ = l_l_v0_Window_0_Tab_3:CreateKeybind({
-    Name = "Zoom", 
-    CurrentKeybind = "X", 
-    HoldToInteract = true, 
-    Flag = "Zoom1", 
-    Callback = function(v428) --[[ Line: 0 ]] --[[ Name:  ]]
-        -- upvalues: v427 (ref)
-        v427 = v428;
-    end
-});
-local _ = l_l_v0_Window_0_Tab_3:CreateSlider({
-    Name = "FOV Changer", 
-    Range = {
-        50, 
-        120
-    }, 
-    Increment = 1, 
-    Suffix = "FOV", 
-    CurrentValue = v424, 
-    Flag = "Slider1", 
-    Callback = function(v430) --[[ Line: 0 ]] --[[ Name:  ]]
-        -- upvalues: v424 (ref)
-        v424 = v430;
-    end
-});
-local v432 = getrawmetatable(game);
-setreadonly(v432, false);
-local l___index_0 = v432.__index;
-local l___newindex_0 = v432.__newindex;
-v432.__index = newcclosure(function(v435, v436) --[[ Line: 0 ]] --[[ Name:  ]]
-    -- upvalues: v423 (ref), v425 (ref), l___index_0 (ref)
-    if v435 == v423 and v436 == "FieldOfView" then
-        return v425;
-    else
-        return l___index_0(v435, v436);
-    end;
-end);
-v432.__newindex = newcclosure(function(v437, v438, v439) --[[ Line: 0 ]] --[[ Name:  ]]
-    -- upvalues: v423 (ref), v427 (ref), l___newindex_0 (ref), v426 (ref), v424 (ref)
-    if v437 == v423 and v438 == "FieldOfView" then
-        if v427 then
-            l___newindex_0(v437, v438, v426);
-        else
-            l___newindex_0(v437, v438, v424);
-        end;
-        return;
-    else
-        return l___newindex_0(v437, v438, v439);
-    end;
-end);
-setreadonly(v432, true);
-l_RunService_3.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
-    -- upvalues: v427 (ref), v423 (ref), v426 (ref), v424 (ref)
-    if v427 then
-        v423.FieldOfView = v426;
-    else
-        v423.FieldOfView = v424;
-    end;
-end);
+
 local _ = l_l_v0_Window_0_Tab_3:CreateSection("HitSounds");
 local v441 = {
     Default = "rbxassetid://9119561046", 
