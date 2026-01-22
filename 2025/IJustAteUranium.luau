@@ -160,6 +160,21 @@ local l_CurrentCamera_0 = l_Workspace_0.CurrentCamera;
 local v25 = {};
 local v147 = Drawing.new("Line"); -- Armor ESP Line moved to top scope
 local v151 = false; -- Armor ESP Toggle State moved to top scope
+
+-- Global ESP Tables (Moved to top for Master Switch Scope)
+local ItemESP = {};
+local CorpseESP = {};
+local RaidESP = {};
+local AirdropESP = {};
+local VehicleESP = {};
+local oreESP = {};
+local ESP_ENABLED = {
+    Stone = false, 
+    Iron = false, 
+    Nitrate = false, 
+    ShowDistance = false
+};
+
 local MasterESPEnabled = true;
 local v26 = false;
 local v27 = true;
@@ -199,6 +214,7 @@ local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
             if RaidESP then for _, v in pairs(RaidESP) do if v.text then v.text.Visible = false end end end
             if AirdropESP then for _, v in pairs(AirdropESP) do if v.drawing then v.drawing.Visible = false end end end
             if VehicleESP then for _, v in pairs(VehicleESP) do if v.Drawing then v.Drawing.Visible = false end end end
+            if oreESP then for _, v in pairs(oreESP) do if v.Text then v.Text.Visible = false end end end
             -- Cleanup Armor ESP
             if G2L and G2L["1"] then
                 G2L["1"].Enabled = false
@@ -247,6 +263,7 @@ local _ = l_l_v0_Window_0_Tab_1:CreateKeybind({
             if RaidESP then for _, v in pairs(RaidESP) do if v.text then v.text.Visible = false end end end
             if AirdropESP then for _, v in pairs(AirdropESP) do if v.drawing then v.drawing.Visible = false end end end
             if VehicleESP then for _, v in pairs(VehicleESP) do if v.Drawing then v.Drawing.Visible = false end end end
+            if oreESP then for _, v in pairs(oreESP) do if v.Text then v.Text.Visible = false end end end
             if G2L and G2L["1"] then
                 G2L["1"].Enabled = false
             end
@@ -1530,7 +1547,7 @@ l_RunService_0.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
             end;
         end;
     end;
-    if CorpseESPEnabled then
+    if CorpseESPEnabled and MasterESPEnabled then
         for v227, v228 in pairs(CorpseESP) do
             local v229 = v227.PrimaryPart or v227:FindFirstChildWhichIsA("BasePart");
             if v229 then
@@ -1548,7 +1565,7 @@ l_RunService_0.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
             v233.drawing.Visible = false;
         end;
     end;
-    if RaidESP_Enabled then
+    if RaidESP_Enabled and MasterESPEnabled then
         for v234 = #RaidESP, 1, -1 do
             local v235 = RaidESP[v234];
             local v236 = tick() - v235.startTime;
@@ -1566,7 +1583,7 @@ l_RunService_0.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
             end;
         end;
     end;
-    if AirdropESP_Enabled then
+    if AirdropESP_Enabled and MasterESPEnabled then
         for _, v241 in ipairs(l_Workspace_0:GetChildren()) do
             if v241:IsA("Model") then
                 l_ipairs_0(v241);
@@ -1789,7 +1806,7 @@ l_RunService_1.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
         if l_Part_1 and l_Part_1.Parent then
             local l_Magnitude_1 = (l_CurrentCamera_1.CFrame.Position - l_Part_1.Position).Magnitude;
             local v298, v299 = l_CurrentCamera_1:WorldToViewportPoint(l_Part_1.Position);
-            if v299 and l_Magnitude_1 <= renderDistance and ESP_ENABLED[v295.OreType] then
+            if MasterESPEnabled and v299 and l_Magnitude_1 <= renderDistance and ESP_ENABLED[v295.OreType] then
                 local l_Text_0 = v295.Text;
                 if ESP_ENABLED.ShowDistance then
                     l_Text_0.Text = string.format("%s | %.0fm", v295.OreType, l_Magnitude_1);
