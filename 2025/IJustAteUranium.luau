@@ -158,6 +158,8 @@ local l_RunService_0 = game:GetService("RunService");
 local l_Workspace_0 = game:GetService("Workspace");
 local l_CurrentCamera_0 = l_Workspace_0.CurrentCamera;
 local v25 = {};
+local v147 = Drawing.new("Line"); -- Armor ESP Line moved to top scope
+local v151 = false; -- Armor ESP Toggle State moved to top scope
 local MasterESPEnabled = true;
 local v26 = false;
 local v27 = true;
@@ -182,9 +184,9 @@ local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
             if v25 then
                 for i, v in pairs(v25) do
                     if v.box then v.box.Visible = false end
-                    if v.name then v.name.Visible = false end
-                    if v.distance then v.distance.Visible = false end
-                    if v.tool then v.tool.Visible = false end
+                    if v.outline then v.outline.Visible = false end
+                    if v.text then v.text.Visible = false end
+                    if v.weaponText then v.weaponText.Visible = false end
                     if v.skeletonLines then
                         for _, lineCtx in pairs(v.skeletonLines) do
                             if lineCtx.line then lineCtx.line.Visible = false end
@@ -192,6 +194,11 @@ local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
                     end
                 end
             end
+            if ItemESP then for _, v in pairs(ItemESP) do if v.drawing then v.drawing.Visible = false end end end
+            if CorpseESP then for _, v in pairs(CorpseESP) do if v.drawing then v.drawing.Visible = false end end end
+            if RaidESP then for _, v in pairs(RaidESP) do if v.text then v.text.Visible = false end end end
+            if AirdropESP then for _, v in pairs(AirdropESP) do if v.drawing then v.drawing.Visible = false end end end
+            if VehicleESP then for _, v in pairs(VehicleESP) do if v.Drawing then v.Drawing.Visible = false end end end
             -- Cleanup Armor ESP
             if G2L and G2L["1"] then
                 G2L["1"].Enabled = false
@@ -225,9 +232,9 @@ local _ = l_l_v0_Window_0_Tab_1:CreateKeybind({
             if v25 then
                 for i, v in pairs(v25) do
                     if v.box then v.box.Visible = false end
-                    if v.name then v.name.Visible = false end
-                    if v.distance then v.distance.Visible = false end
-                    if v.tool then v.tool.Visible = false end
+                    if v.outline then v.outline.Visible = false end
+                    if v.text then v.text.Visible = false end
+                    if v.weaponText then v.weaponText.Visible = false end
                     if v.skeletonLines then
                         for _, lineCtx in pairs(v.skeletonLines) do
                             if lineCtx.line then lineCtx.line.Visible = false end
@@ -235,6 +242,11 @@ local _ = l_l_v0_Window_0_Tab_1:CreateKeybind({
                     end
                 end
             end
+            if ItemESP then for _, v in pairs(ItemESP) do if v.drawing then v.drawing.Visible = false end end end
+            if CorpseESP then for _, v in pairs(CorpseESP) do if v.drawing then v.drawing.Visible = false end end end
+            if RaidESP then for _, v in pairs(RaidESP) do if v.text then v.text.Visible = false end end end
+            if AirdropESP then for _, v in pairs(AirdropESP) do if v.drawing then v.drawing.Visible = false end end end
+            if VehicleESP then for _, v in pairs(VehicleESP) do if v.Drawing then v.Drawing.Visible = false end end end
             if G2L and G2L["1"] then
                 G2L["1"].Enabled = false
             end
@@ -1231,19 +1243,20 @@ v146.Thickness = 1.5;
 v146.Radius = 150;
 v146.Color = Color3.fromRGB(0, 255, 0);
 v146.Filled = false;
-local v147 = Drawing.new("Line");
+-- v147 defined at top
+v147.Visible = false;
 v147.Visible = false;
 v147.Thickness = 1.5;
 v147.Color = Color3.fromRGB(255, 0, 0);
 local v148 = nil;
 local v149 = 0;
 local v150 = 1;
-local v151 = false;
+v151 = false; -- defined at top
 local v152 = 220;
 local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
     Name = "Armor Esp", 
     CurrentValue = false, 
-    Flag = "Toggle1", 
+    Flag = "ArmorESPToggle", 
     Callback = function(v153) --[[ Line: 0 ]] --[[ Name:  ]]
         -- upvalues: v151 (ref)
         v151 = v153;
@@ -1368,7 +1381,7 @@ local function v187(v181) --[[ Line: 0 ]] --[[ Name:  ]]
 end;
 local function v190() --[[ Line: 0 ]] --[[ Name:  ]]
     -- upvalues: l_Workspace_0 (ref), v187 (ref)
-    if not ItemESP_Enabled then
+    if not ItemESP_Enabled or not MasterESPEnabled then
         return;
     else
         for _, v189 in ipairs(l_Workspace_0:GetChildren()) do
@@ -1843,6 +1856,10 @@ local v318 = 500;
 l_RunService_2.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
     -- upvalues: v317 (ref), v318 (ref), v310 (ref), v314 (ref), v316 (ref), l_CurrentCamera_2 (ref)
     v317 = v317 + 1;
+    if not MasterESPEnabled then
+         for _, v in pairs(VehicleESP) do if v.Drawing then v.Drawing.Visible = false end end
+         return
+    end
     if v317 % v318 == 0 then
         for _, v320 in ipairs(workspace:GetChildren()) do
             if v320:IsA("Model") and not VehicleESP[v320] then
@@ -1967,7 +1984,7 @@ local _ = l_l_v0_Window_0_Tab_2:CreateSlider({
     Increment = 0.1, 
     Suffix = "Size", 
     CurrentValue = 0.5, 
-    Flag = "Slider1", 
+    Flag = "WaterSizeSlider", 
     Callback = function(v345) --[[ Line: 0 ]] --[[ Name:  ]]
         game.Workspace.Terrain.WaterWaveSize = v345;
     end
@@ -1976,7 +1993,7 @@ local _ = l_l_v0_Window_0_Tab_2:CreateSection("Clouds");
 local _ = l_l_v0_Window_0_Tab_2:CreateColorPicker({
     Name = "Color Picker", 
     Color = Color3.fromRGB(255, 255, 255), 
-    Flag = "ColorPicker1", 
+    Flag = "CloudColorPicker", 
     Callback = function(v348) --[[ Line: 0 ]] --[[ Name:  ]]
         game.Workspace.Terrain.Clouds.Color = v348;
     end
@@ -2793,7 +2810,7 @@ local _ = l_l_v0_Window_0_Tab_4:CreateKeybind({
     Name = "Free Cam", 
     CurrentKeybind = "Z", 
     HoldToInteract = false, 
-    Flag = "Keybind1", 
+    Flag = "FreeCamKeybind", 
     Callback = function(_) --[[ Line: 0 ]] --[[ Name:  ]]
         -- upvalues: l_RunService_3 (ref), l_CurrentCamera_2 (ref), v564 (ref), v565 (ref), v561 (ref), v562 (ref), v563 (ref), l_UserInputService_3 (ref), v566 (ref), v567 (ref)
         if FreeCamEnabled then
@@ -2859,7 +2876,7 @@ local _ = l_l_v0_Window_0_Tab_4:CreateSlider({
     }, 
     Increment = 1, 
     CurrentValue = 150, 
-    Flag = "Slider1", 
+    Flag = "FreeCamSpeedSlider", 
     Callback = function(v582) --[[ Line: 0 ]] --[[ Name:  ]]
         FreeCamSpeed = v582;
     end
@@ -2903,9 +2920,9 @@ local _ = l_l_v0_Window_0_Tab_4:CreateButton({
         if v25 then
             for i, v in pairs(v25) do
                 if v.box then v.box.Visible = false; v.box:Remove() end
-                if v.name then v.name.Visible = false; v.name:Remove() end
-                if v.distance then v.distance.Visible = false; v.distance:Remove() end
-                if v.tool then v.tool.Visible = false; v.tool:Remove() end
+                if v.outline then v.outline.Visible = false; v.outline:Remove() end
+                if v.text then v.text.Visible = false; v.text:Remove() end
+                if v.weaponText then v.weaponText.Visible = false; v.weaponText:Remove() end
                 if v.skeletonLines then
                     for _, lineCtx in pairs(v.skeletonLines) do
                         if lineCtx.line then lineCtx.line.Visible = false; lineCtx.line:Remove() end
@@ -2918,4 +2935,9 @@ local _ = l_l_v0_Window_0_Tab_4:CreateButton({
          v0:Destroy();
     end
 });
+
+task.delay(1, function()
+    v0:LoadConfiguration()
+end)
+
 return G2L["1"];
