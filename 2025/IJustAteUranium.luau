@@ -153,6 +153,24 @@ local _ = l_l_v0_Window_0_Tab_0:CreateSlider({
 local l_l_v0_Window_0_Tab_1 = l_v0_Window_0:CreateTab("ESP", nil);
 local _ = l_l_v0_Window_0_Tab_1:CreateSection("Players");
 
+
+local l_RunService_0 = game:GetService("RunService");
+local l_Workspace_0 = game:GetService("Workspace");
+local l_CurrentCamera_0 = l_Workspace_0.CurrentCamera;
+local v25 = {};
+local MasterESPEnabled = true;
+local v26 = false;
+local v27 = true;
+local v28 = true;
+local v29 = true;
+local v30 = false;
+local v31 = true;
+local v32 = false;
+local v33 = Color3.fromRGB(255, 255, 255);
+local v34 = Color3.fromRGB(255, 255, 255);
+local v35 = Color3.fromRGB(255, 255, 255);
+local _ = math.tan(math.rad(l_CurrentCamera_0.FieldOfView * 0.5));
+
 local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
     Name = "Master ESP Toggle", 
     CurrentValue = true, 
@@ -197,7 +215,7 @@ local _ = l_l_v0_Window_0_Tab_1:CreateToggle({
 
 local _ = l_l_v0_Window_0_Tab_1:CreateKeybind({
     Name = "Master ESP Keybind",
-    CurrentKeybind = "~",
+    CurrentKeybind = "J",
     HoldToInteract = false,
     Flag = "MasterESPKeybind",
     Callback = function()
@@ -228,22 +246,6 @@ local _ = l_l_v0_Window_0_Tab_1:CreateKeybind({
         end
     end
 });
-local l_RunService_0 = game:GetService("RunService");
-local l_Workspace_0 = game:GetService("Workspace");
-local l_CurrentCamera_0 = l_Workspace_0.CurrentCamera;
-local v25 = {};
-local MasterESPEnabled = true;
-local v26 = false;
-local v27 = true;
-local v28 = true;
-local v29 = true;
-local v30 = false;
-local v31 = true;
-local v32 = false;
-local v33 = Color3.fromRGB(255, 255, 255);
-local v34 = Color3.fromRGB(255, 255, 255);
-local v35 = Color3.fromRGB(255, 255, 255);
-local _ = math.tan(math.rad(l_CurrentCamera_0.FieldOfView * 0.5));
 l_l_v0_Window_0_Tab_1:CreateToggle({
     Name = "Box Esp", 
     CurrentValue = false, 
