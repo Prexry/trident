@@ -1116,6 +1116,7 @@ l_RunService_0.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
                                 v121.line.From = Vector2.new(v124.X, v124.Y);
                                 v121.line.To = Vector2.new(v126.X, v126.Y);
                                 v121.line.Visible = true;
+                                v121.line.Color = v55(v94) and v35 or Color3.fromRGB(0, 150, 255);
                             else
                                 v121.line.Visible = false;
                             end;
@@ -1529,35 +1530,45 @@ end;
 l_RunService_0.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
     -- upvalues: v190 (ref), l_CurrentCamera_0 (ref), l_Workspace_0 (ref), l_ipairs_0 (ref)
     if ItemESP_Enabled then
-        itemFrameCounter = itemFrameCounter + 1;
-        if itemFrameCounter >= 10 then
-            v190();
-            itemFrameCounter = 0;
-        end;
-        for v223, v224 in pairs(ItemESP) do
-            if v224.part and v224.part.Parent then
-                local v225, v226 = l_CurrentCamera_0:WorldToViewportPoint(v224.part.Position);
-                v224.drawing.Visible = v226;
-                if v226 then
-                    v224.drawing.Position = Vector2.new(v225.X, v225.Y - 20);
+        if not MasterESPEnabled then
+             for _, v in pairs(ItemESP) do if v.drawing then v.drawing.Visible = false end end
+        else
+            itemFrameCounter = itemFrameCounter + 1;
+            if itemFrameCounter >= 10 then
+                v190();
+                itemFrameCounter = 0;
+            end;
+            for v223, v224 in pairs(ItemESP) do
+                if v224.part and v224.part.Parent then
+                    local v225, v226 = l_CurrentCamera_0:WorldToViewportPoint(v224.part.Position);
+                    v224.drawing.Visible = v226;
+                    if v226 then
+                        v224.drawing.Position = Vector2.new(v225.X, v225.Y - 20);
+                    end;
+                else
+                    v224.drawing:Remove();
+                    ItemESP[v223] = nil;
                 end;
-            else
-                v224.drawing:Remove();
-                ItemESP[v223] = nil;
             end;
         end;
     end;
-    if CorpseESPEnabled and MasterESPEnabled then
-        for v227, v228 in pairs(CorpseESP) do
-            local v229 = v227.PrimaryPart or v227:FindFirstChildWhichIsA("BasePart");
-            if v229 then
-                local v230, v231 = l_CurrentCamera_0:WorldToViewportPoint(v229.Position);
-                v228.drawing.Visible = v231;
-                if v231 then
-                    v228.drawing.Position = Vector2.new(v230.X, v230.Y - 20);
+    if CorpseESPEnabled then
+        if not MasterESPEnabled then
+            for _, v233 in pairs(CorpseESP) do
+                v233.drawing.Visible = false;
+            end;
+        else
+            for v227, v228 in pairs(CorpseESP) do
+                local v229 = v227.PrimaryPart or v227:FindFirstChildWhichIsA("BasePart");
+                if v229 then
+                    local v230, v231 = l_CurrentCamera_0:WorldToViewportPoint(v229.Position);
+                    v228.drawing.Visible = v231;
+                    if v231 then
+                        v228.drawing.Position = Vector2.new(v230.X, v230.Y - 20);
+                    end;
+                else
+                    v228.drawing.Visible = false;
                 end;
-            else
-                v228.drawing.Visible = false;
             end;
         end;
     else
@@ -1565,39 +1576,47 @@ l_RunService_0.RenderStepped:Connect(function() --[[ Line: 0 ]] --[[ Name:  ]]
             v233.drawing.Visible = false;
         end;
     end;
-    if RaidESP_Enabled and MasterESPEnabled then
-        for v234 = #RaidESP, 1, -1 do
-            local v235 = RaidESP[v234];
-            local v236 = tick() - v235.startTime;
-            if v236 > 300 then
-                v235.text:Remove();
-                table.remove(RaidESP, v234);
-            else
-                local v237, v238 = l_CurrentCamera_0:WorldToViewportPoint(v235.position);
-                v235.text.Visible = v238;
-                if v238 then
-                    local v239 = math.floor((v235.position - l_CurrentCamera_0.CFrame.Position).Magnitude);
-                    v235.text.Text = "Raid | " .. v239 .. " | " .. math.floor(v236);
-                    v235.text.Position = Vector2.new(v237.X, v237.Y);
+    if RaidESP_Enabled then
+        if not MasterESPEnabled then
+             for _, v in pairs(RaidESP) do if v.text then v.text.Visible = false end end
+        else
+            for v234 = #RaidESP, 1, -1 do
+                local v235 = RaidESP[v234];
+                local v236 = tick() - v235.startTime;
+                if v236 > 300 then
+                    v235.text:Remove();
+                    table.remove(RaidESP, v234);
+                else
+                    local v237, v238 = l_CurrentCamera_0:WorldToViewportPoint(v235.position);
+                    v235.text.Visible = v238;
+                    if v238 then
+                        local v239 = math.floor((v235.position - l_CurrentCamera_0.CFrame.Position).Magnitude);
+                        v235.text.Text = "Raid | " .. v239 .. " | " .. math.floor(v236);
+                        v235.text.Position = Vector2.new(v237.X, v237.Y);
+                    end;
                 end;
             end;
         end;
     end;
-    if AirdropESP_Enabled and MasterESPEnabled then
-        for _, v241 in ipairs(l_Workspace_0:GetChildren()) do
-            if v241:IsA("Model") then
-                l_ipairs_0(v241);
+    if AirdropESP_Enabled then
+        if not MasterESPEnabled then
+            for _, v in pairs(AirdropESP) do if v.drawing then v.drawing.Visible = false end end
+        else
+            for _, v241 in ipairs(l_Workspace_0:GetChildren()) do
+                if v241:IsA("Model") then
+                    l_ipairs_0(v241);
+                end;
             end;
-        end;
-        for v242, v243 in pairs(AirdropESP) do
-            if not v242 or not v242.Parent then
-                v243.drawing:Remove();
-                AirdropESP[v242] = nil;
-            else
-                local v244, v245 = l_CurrentCamera_0:WorldToViewportPoint(v243.part.Position);
-                v243.drawing.Visible = v245;
-                if v245 then
-                    v243.drawing.Position = Vector2.new(v244.X, v244.Y - 20);
+            for v242, v243 in pairs(AirdropESP) do
+                if not v242 or not v242.Parent then
+                    v243.drawing:Remove();
+                    AirdropESP[v242] = nil;
+                else
+                    local v244, v245 = l_CurrentCamera_0:WorldToViewportPoint(v243.part.Position);
+                    v243.drawing.Visible = v245;
+                    if v245 then
+                        v243.drawing.Position = Vector2.new(v244.X, v244.Y - 20);
+                    end;
                 end;
             end;
         end;
@@ -2917,11 +2936,9 @@ l_UserInputService_3.InputEnded:Connect(function(v586) --[[ Line: 0 ]] --[[ Name
 end);
 local _ = l_l_v0_Window_0_Tab_4:CreateButton({
     Name = "Close Russellsploit", 
-    Callback = function() --[[ Line: 0 ]] --[[ Name:  ]]
-        -- upvalues: v0 (ref)
+    Callback = function()
          if game:GetService('CoreGui'):FindFirstChild('ArmorPreviewUI') then game:GetService('CoreGui').ArmorPreviewUI:Destroy() end; if game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui'):FindFirstChild('ArmorPreviewUI') then game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui').ArmorPreviewUI:Destroy() end;
          if game:GetService('CoreGui'):FindFirstChild('ArmorDisplayGUI') then game:GetService('CoreGui').ArmorDisplayGUI:Destroy() end; if game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui'):FindFirstChild('ArmorDisplayGUI') then game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui').ArmorDisplayGUI:Destroy() end;
-         
          
          HeadSizeEnabled = false;
          if bigHeadIndicator then bigHeadIndicator:Destroy() end
@@ -2933,24 +2950,53 @@ local _ = l_l_v0_Window_0_Tab_4:CreateButton({
         end;
         v6 = {};
 
-        if ToggleESP then ToggleESP(false) end
+        -- Disable All ESP Flags
+        MasterESPEnabled = false
+        ItemESP_Enabled = false
+        CorpseESPEnabled = false
+        RaidESP_Enabled = false
+        AirdropESP_Enabled = false
+        ESP_ENABLED = { Stone = false, Iron = false, Nitrate = false, ShowDistance = false }
+
+        -- Cleanup Player ESP
         if v25 then
             for i, v in pairs(v25) do
-                if v.box then v.box.Visible = false; v.box:Remove() end
-                if v.outline then v.outline.Visible = false; v.outline:Remove() end
-                if v.text then v.text.Visible = false; v.text:Remove() end
-                if v.weaponText then v.weaponText.Visible = false; v.weaponText:Remove() end
+                if v.box then v.box:Remove() end
+                if v.outline then v.outline:Remove() end
+                if v.text then v.text:Remove() end
+                if v.weaponText then v.weaponText:Remove() end
                 if v.skeletonLines then
                     for _, lineCtx in pairs(v.skeletonLines) do
-                        if lineCtx.line then lineCtx.line.Visible = false; lineCtx.line:Remove() end
+                        if lineCtx.line then lineCtx.line:Remove() end
                     end
                 end
             end
-            v25 = {}
         end
+        v25 = {}
+
+        if ItemESP then for _, v in pairs(ItemESP) do if v.drawing then v.drawing:Remove() end end end
+        ItemESP = {}
+
+        if CorpseESP then for _, v in pairs(CorpseESP) do if v.drawing then v.drawing:Remove() end end end
+        CorpseESP = {}
+        
+        if RaidESP then for _, v in pairs(RaidESP) do if v.text then v.text:Remove() end end end
+        RaidESP = {}
+        
+        if AirdropESP then for _, v in pairs(AirdropESP) do if v.drawing then v.drawing:Remove() end end end
+        AirdropESP = {}
+        
+        if VehicleESP then for _, v in pairs(VehicleESP) do if v.Drawing then v.Drawing:Remove() end end end
+        VehicleESP = {}
+        
+        if oreESP then for _, v in pairs(oreESP) do if v.Text then v.Text:Remove() end end end
+        oreESP = {}
+
+        if v147 then v147:Remove() end
 
          v0:Destroy();
     end
+
 });
 
 task.delay(1, function()
